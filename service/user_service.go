@@ -61,7 +61,7 @@ func (us UserService) GetByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"message": "User ID is invalid."})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "User ID is invalid."})
 		return
 	}
 
@@ -84,7 +84,7 @@ func (us UserService) Update(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"message": "User ID is invalid."})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "User ID is invalid."})
 		return
 	}
 	var user model.User
@@ -131,7 +131,7 @@ func (us UserService) Delete(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"message": "User ID is invalid."})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "User ID is invalid."})
 		return
 	}
 

@@ -37,3 +37,15 @@ func (gr GenreRepo) FindByID(id int, genre *model.Genre) error {
 	}
 	return nil
 }
+
+func (gr GenreRepo) FindBooksByGenre(id int, books *[]model.Book) error {
+	return gr.conn.Joins("JOIN book_genres ON book_genres.book_id = books.id").
+		Where("book_genres.genre_id = ?", id).
+		Find(books).Error
+
+	// err := gr.conn.Preload("Books").First(books, id).Error
+	// if err != nil {
+	// 	return err
+	// }
+	// return nil
+}

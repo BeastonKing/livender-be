@@ -52,7 +52,7 @@ func (gs GenreService) GetByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"message": "Genre ID is invalid."})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Genre ID is invalid."})
 		return
 	}
 
@@ -69,4 +69,34 @@ func (gs GenreService) GetByID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"genre": genre})
+}
+
+func (gs GenreService) GetBooksByGenre(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Genre ID is invalid."})
+		return
+	}
+
+	var genre model.Genre
+
+	err = gs.genreRepo.FindByID(id, &genre)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"message": "Genre not found."})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to retrieve the genre."})
+		return
+	}
+
+	var books []model.Book
+	err = gs.genreRepo.FindBooksByGenre(id, &books)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"books": books})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"books": books})
 }

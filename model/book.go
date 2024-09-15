@@ -11,5 +11,6 @@ type Book struct {
 	UserID      uint
 	IsSold      bool
 	Genres      []*Genre `gorm:"many2many:book_genres;"`
-	Order       Order
+	// Genres []*Genre `gorm:"many2many:book_genres;constraint:OnDelete:CASCADE;"` // Add constraint here
+	Order Order
 }
