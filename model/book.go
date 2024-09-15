@@ -12,5 +12,5 @@ type Book struct {
 	IsSold      bool
 	Genres      []*Genre `gorm:"many2many:book_genres;"`
 	// Genres []*Genre `gorm:"many2many:book_genres;constraint:OnDelete:CASCADE;"` // Add constraint here
-	Order Order
+	// Order Order
 }

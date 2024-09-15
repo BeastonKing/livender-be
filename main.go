@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func SetupRouter(genreRepo repository.GenreRepo, userRepo repository.UserRepo, bookRepo repository.BookRepo) *gin.Engine {
+func SetupRouter(genreRepo repository.GenreRepo, userRepo repository.UserRepo, bookRepo repository.BookRepo, orderRepo repository.OrderRepo) *gin.Engine {
 	e := gin.Default()
 
 	// e.Use() // Cors
@@ -21,6 +21,7 @@ func SetupRouter(genreRepo repository.GenreRepo, userRepo repository.UserRepo, b
 	rest.GenreRoutes(e, genreRepo)
 	rest.UserRoutes(e, userRepo)
 	rest.BookRoutes(e, bookRepo)
+	rest.OrderRoutes(e, orderRepo, bookRepo)
 
 	return e
 }
@@ -53,25 +54,26 @@ func main() {
 		log.Fatalln("Failed to auto migrate.")
 	}
 
-	genreFantasy := model.Genre{Name: "Fantasy"}
-	genreFiction := model.Genre{Name: "Fiction"}
-	genreNonFiction := model.Genre{Name: "Non-Fiction"}
-	genreScienceFiction := model.Genre{Name: "Adventure"}
-	genreMystery := model.Genre{Name: "Mystery"}
-	genreHorror := model.Genre{Name: "Horror"}
+	// genreFantasy := model.Genre{Name: "Fantasy"}
+	// genreFiction := model.Genre{Name: "Fiction"}
+	// genreNonFiction := model.Genre{Name: "Non-Fiction"}
+	// genreScienceFiction := model.Genre{Name: "Adventure"}
+	// genreMystery := model.Genre{Name: "Mystery"}
+	// genreHorror := model.Genre{Name: "Horror"}
 
-	dbConnection.Create(&genreFantasy)
-	dbConnection.Create(&genreFiction)
-	dbConnection.Create(&genreNonFiction)
-	dbConnection.Create(&genreScienceFiction)
-	dbConnection.Create(&genreMystery)
-	dbConnection.Create(&genreHorror)
+	// dbConnection.Create(&genreFantasy)
+	// dbConnection.Create(&genreFiction)
+	// dbConnection.Create(&genreNonFiction)
+	// dbConnection.Create(&genreScienceFiction)
+	// dbConnection.Create(&genreMystery)
+	// dbConnection.Create(&genreHorror)
 
 	genreRepo := repository.NewGenreRepo(dbConnection)
 	userRepo := repository.NewUserRepo(dbConnection)
 	bookRepo := repository.NewBookRepo(dbConnection)
+	orderRepo := repository.NewOrderRepo(dbConnection)
 
-	r := SetupRouter(genreRepo, userRepo, bookRepo)
+	r := SetupRouter(genreRepo, userRepo, bookRepo, orderRepo)
 
 	r.Run(":8080") // listen and serve on 0.0.0.0:8080
 }
