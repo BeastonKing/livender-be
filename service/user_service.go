@@ -29,7 +29,6 @@ func (us UserService) Create(c *gin.Context) {
 		return
 	}
 
-	// Hash password (using bcrypt or any preferred hashing library)
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to hash password."})
@@ -89,7 +88,6 @@ func (us UserService) Update(c *gin.Context) {
 	}
 	var user model.User
 
-	// Fetch existing user
 	err = us.userRepo.FindByID(id, &user)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -100,14 +98,12 @@ func (us UserService) Update(c *gin.Context) {
 		return
 	}
 
-	// Bind updated data
 	err = c.ShouldBindJSON(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request."})
 		return
 	}
 
-	// Optionally handle password update
 	if user.Password != "" {
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 		if err != nil {
@@ -117,7 +113,6 @@ func (us UserService) Update(c *gin.Context) {
 		user.Password = string(hashedPassword)
 	}
 
-	// Save updated user
 	err = us.userRepo.Update(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to update user."})
@@ -135,7 +130,6 @@ func (us UserService) Delete(c *gin.Context) {
 		return
 	}
 
-	// Fetch the user to confirm existence
 	var user model.User
 	err = us.userRepo.FindByID(id, &user)
 	if err != nil {
@@ -147,7 +141,6 @@ func (us UserService) Delete(c *gin.Context) {
 		return
 	}
 
-	// Delete the user
 	err = us.userRepo.Delete(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to delete user."})
@@ -165,7 +158,6 @@ func (us UserService) Register(c *gin.Context) {
 		return
 	}
 
-	// Hash password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to hash password."})
@@ -200,17 +192,15 @@ func (us UserService) Login(c *gin.Context) {
 		return
 	}
 
-	// Generate JWT token
 	token, err := util.GenerateToken(user.ID, user.Username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to generate token."})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, gin.H{"user_id": user.ID, "token": token})
 }
 
-// Example protected route to get user profile
 func (us UserService) GetProfile(c *gin.Context) {
 	userID := int(c.MustGet("userID").(uint))
 

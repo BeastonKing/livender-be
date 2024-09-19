@@ -21,7 +21,6 @@ func NewOrderService(orderRepo repository.OrderRepo, bookRepo repository.BookRep
 	return OrderService{orderRepo, bookRepo}
 }
 
-// Purchase a book
 func (os OrderService) Purchase(c *gin.Context) {
 	var req struct {
 		BookID uint `json:"book_id"`
@@ -34,7 +33,6 @@ func (os OrderService) Purchase(c *gin.Context) {
 		return
 	}
 
-	// Check if the book exists and is not sold
 	var book model.Book
 	err = os.bookRepo.FindByID(int(req.BookID), &book)
 	if err != nil {
@@ -46,13 +44,11 @@ func (os OrderService) Purchase(c *gin.Context) {
 		return
 	}
 
-	// Check if the book is already sold
 	if book.IsSold {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "This book is already sold."})
 		return
 	}
 
-	// Check if the book has already been ordered
 	order, err := os.orderRepo.FindByBookID(req.BookID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to check if book is ordered."})
@@ -63,7 +59,6 @@ func (os OrderService) Purchase(c *gin.Context) {
 		return
 	}
 
-	// Create the order
 	newOrder := model.Order{
 		UserID:       req.UserID,
 		BookID:       req.BookID,
@@ -76,7 +71,6 @@ func (os OrderService) Purchase(c *gin.Context) {
 		return
 	}
 
-	// Mark the book as sold
 	book.IsSold = true
 	err = os.bookRepo.Update(&book)
 	if err != nil {
@@ -104,7 +98,6 @@ func (os OrderService) GetByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"order": order})
 }
 
-// Get all orders for a user
 func (os OrderService) GetUserOrders(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 

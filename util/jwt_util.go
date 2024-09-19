@@ -6,7 +6,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-var jwtSecret = []byte("thisistrulyaverysecretkey") // Replace with a secure key
+var jwtSecret = []byte("thisistrulyaverysecretkey")
 
 type Claims struct {
 	UserID   uint   `json:"user_id"`
@@ -14,9 +14,8 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-// Generate JWT Token
 func GenerateToken(userID uint, username string) (string, error) {
-	expirationTime := time.Now().Add(24 * time.Hour) // 1 day token validity
+	expirationTime := time.Now().Add(100 * time.Hour)
 	claims := &Claims{
 		UserID:   userID,
 		Username: username,
@@ -34,7 +33,6 @@ func GenerateToken(userID uint, username string) (string, error) {
 	return tokenString, nil
 }
 
-// Validate JWT Token
 func ValidateToken(tokenString string) (*Claims, error) {
 	claims := &Claims{}
 

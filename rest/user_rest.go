@@ -15,7 +15,6 @@ func UserRoutes(r *gin.Engine, userRepo repository.UserRepo) {
 	u.POST("/register", us.Register)
 	u.POST("/login", us.Login)
 
-	// Protected routes
 	protected := r.Group("/users")
 	protected.Use(middleware.AuthMiddleware())
 

@@ -7,10 +7,10 @@ type Book struct {
 	Title       string
 	Author      string
 	ReleaseYear int
+	Price       int
+	Image       string
 	Age         int // in months
 	UserID      uint
 	IsSold      bool
 	Genres      []*Genre `gorm:"many2many:book_genres;"`
-	// Genres []*Genre `gorm:"many2many:book_genres;constraint:OnDelete:CASCADE;"` // Add constraint here
-	// Order Order
 }

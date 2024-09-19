@@ -31,24 +31,22 @@ func (or OrderRepo) FindByID(id int, order *model.Order) error {
 	return nil
 }
 
-// Find an order by book ID (to check if a book is already purchased)
 func (or OrderRepo) FindByBookID(bookID uint) (*model.Order, error) {
 	var order model.Order
 	err := or.conn.Where("book_id = ?", bookID).First(&order).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, nil // No order found for this book
+			return nil, nil
 		}
 		return nil, err
 	}
 	return &order, nil
 }
 
-// Find all orders by user ID
 func (or OrderRepo) FindAllByUserID(userID int) ([]model.Order, error) {
 	var orders []model.Order
-	err := or.conn.Where("user_id = ?", userID).Preload("Book").Find(&orders).Error
+	err := or.conn.Where("user_id = ?", userID).Preload("Book").Preload("Book.Genres").Find(&orders).Error
 	if err != nil {
 		return nil, err
 	}

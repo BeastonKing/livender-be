@@ -11,13 +11,11 @@ import (
 func OrderRoutes(r *gin.Engine, orderRepo repository.OrderRepo, bookRepo repository.BookRepo) {
 	os := service.NewOrderService(orderRepo, bookRepo)
 
-	// Protected routes for creating orders (purchases)
 	protected := r.Group("/orders")
 	protected.Use(middleware.AuthMiddleware())
 
-	protected.GET("/:id", os.GetByID)        // Purchase a book
-	protected.POST("/purchase", os.Purchase) // Purchase a book
+	protected.GET("/:id", os.GetByID)
+	protected.POST("/purchase", os.Purchase)
 
-	// View user orders
-	protected.GET("/user/:id", os.GetUserOrders) // Get all orders by user
+	protected.GET("/user/:id", os.GetUserOrders)
 }

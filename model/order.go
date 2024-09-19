@@ -12,6 +12,5 @@ type Order struct {
 	BookID       uint
 	PurchaseDate time.Time
 
-	// Preload the associated Book
 	Book Book `gorm:"foreignKey:BookID"`
 }

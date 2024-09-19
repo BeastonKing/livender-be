@@ -16,5 +16,5 @@ func GenreRoutes(r *gin.Engine, genreRepo repository.GenreRepo) {
 	g.POST("", s.Create)
 
 	b := r.Group("/books")
-	b.GET("/genre/:id", s.GetBooksByGenre) // get books by genre
+	b.GET("/genre/:id", s.GetBooksByGenre)
 }
